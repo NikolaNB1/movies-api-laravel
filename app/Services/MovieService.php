@@ -8,17 +8,30 @@ use Illuminate\Http\Request;
 class MovieService
 {
 
-    public function showMovies()
+    public function showMovies(Request $request)
     {
+        $title = $request->input('title');
 
-        $movies = Movie::get();
+        if ($title) {
+            $movies = Movie::search($title);
+        } else {
+            $movies = Movie::all();
+        }
+
         return $movies;
     }
 
     public function postMovie(Request  $request)
     {
 
-        $request->validate([]);
+        $request->validate([
+            'title' => 'required|unique:movies,title',
+            'director' => 'required',
+            'image_url' => 'url',
+            'duration' => 'required|between:1,500',
+            'release_date' => 'required|unique:movies,release_date',
+            'genre' => 'required'
+        ]);
 
         $movie = new Movie();
 
@@ -42,9 +55,16 @@ class MovieService
 
     public function editMovie(Request $request, string $id)
     {
+        $request->validate([
+            'title' => 'required|unique:movies,title',
+            'director' => 'required',
+            'image_url' => 'url',
+            'duration' => 'required|between:1,500',
+            'release_date' => 'required|unique:movies,release_date',
+            'genre' => 'required'
+        ]);
 
         $movie = Movie::find($id);
-        error_log($request->title);
         $movie->title = $request->title;
         $movie->director = $request->director;
         $movie->image_url = $request->image_url;

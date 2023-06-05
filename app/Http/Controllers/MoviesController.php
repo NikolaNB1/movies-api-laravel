@@ -18,11 +18,11 @@ class MoviesController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $movie = $this->movieService->showMovies();
+        $movies = $this->movieService->showMovies($request);
 
-        return $movie;
+        return $movies;
     }
 
     /**
